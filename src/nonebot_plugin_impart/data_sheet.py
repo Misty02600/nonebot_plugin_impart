@@ -1,25 +1,18 @@
 """数据库操作模块"""
+
 import os
 import random
 import time
 import sqlalchemy as sa
 from typing import Dict, List
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    Float,
-    Integer,
-    String,
-    select,
-    update,
-    delete
-)
+from sqlalchemy import Boolean, Column, Float, Integer, String, select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from pathlib import Path
 from nonebot import require
+
 require("nonebot_plugin_localstore")
 import nonebot_plugin_localstore as store
 
@@ -28,6 +21,7 @@ DATA_PATH: Path = store.get_plugin_data_dir()
 engine = create_async_engine(f"sqlite+aiosqlite:///{DATA_PATH}/impart.db")
 async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()
+
 
 class UserData(Base):
     """用户数据表"""
@@ -69,16 +63,17 @@ async def check_and_add_column():
     async with engine.begin() as conn:
         result = await conn.execute(sa.text("PRAGMA table_info(userdata)"))
         columns = [row[1] for row in result]
-        if 'win_probability' not in columns:
+        if "win_probability" not in columns:
             await conn.execute(sa.text("ALTER TABLE userdata ADD COLUMN win_probability FLOAT DEFAULT 0.5"))
-        if 'is_challenging' not in columns:
+        if "is_challenging" not in columns:
             await conn.execute(sa.text("ALTER TABLE userdata ADD COLUMN is_challenging BOOLEAN DEFAULT FALSE"))
-        if 'challenge_completed' not in columns:
+        if "challenge_completed" not in columns:
             await conn.execute(sa.text("ALTER TABLE userdata ADD COLUMN challenge_completed BOOLEAN DEFAULT FALSE"))
-        if 'is_near_zero' not in columns:
+        if "is_near_zero" not in columns:
             await conn.execute(sa.text("ALTER TABLE userdata ADD COLUMN is_near_zero BOOLEAN DEFAULT FALSE"))
-        if 'is_zero_or_neg' not in columns:
+        if "is_zero_or_neg" not in columns:
             await conn.execute(sa.text("ALTER TABLE userdata ADD COLUMN is_zero_or_neg BOOLEAN DEFAULT FALSE"))
+
 
 async def init_db():
     async with engine.begin() as conn:
@@ -158,11 +153,7 @@ async def update_challenge_status(userid: int) -> str:
 async def add_new_user(userid: int) -> None:
     """插入一个新用户, 默认长度是10.0"""
     async with async_session() as s:
-        s.add(
-            UserData(
-                userid=userid, jj_length=10.0, last_masturbation_time=int(time.time()), win_probability=0.5
-            )
-        )
+        s.add(UserData(userid=userid, jj_length=10.0, last_masturbation_time=int(time.time()), win_probability=0.5))
         await s.commit()
 
 
@@ -172,9 +163,7 @@ async def update_activity(userid: int) -> None:
         await add_new_user(userid)
     async with async_session() as s:
         await s.execute(
-            update(UserData).where(UserData.userid == userid).values(
-                last_masturbation_time=int(time.time())
-            )
+            update(UserData).where(UserData.userid == userid).values(last_masturbation_time=int(time.time()))
         )
         await s.commit()
 
@@ -191,7 +180,9 @@ async def set_jj_length(userid: int, length: float) -> None:
     async with async_session() as s:
         current_length = await get_jj_length(userid)
         await s.execute(
-            update(UserData).where(UserData.userid == userid).values(
+            update(UserData)
+            .where(UserData.userid == userid)
+            .values(
                 jj_length=round(current_length + length, 3),
                 last_masturbation_time=int(time.time()),
             )
@@ -211,7 +202,9 @@ async def set_win_probability(userid: int, probability_change: float) -> None:
     async with async_session() as s:
         current_probability = await get_win_probability(userid)
         await s.execute(
-            update(UserData).where(UserData.userid == userid).values(
+            update(UserData)
+            .where(UserData.userid == userid)
+            .values(
                 win_probability=round(current_probability + probability_change, 3),
                 last_masturbation_time=int(time.time()),
             )
@@ -252,8 +245,7 @@ async def insert_ejaculation(userid: int, volume: float) -> None:
     now_date = get_today()
     async with async_session() as s:
         result = await s.execute(
-            select(EjaculationData.volume)
-            .filter(EjaculationData.userid == userid, EjaculationData.date == now_date)
+            select(EjaculationData.volume).filter(EjaculationData.userid == userid, EjaculationData.date == now_date)
         )
         current_volume = result.scalar()
         if current_volume is not None:
@@ -278,8 +270,7 @@ async def get_today_ejaculation_data(userid: int) -> float:
     """获取用户当日的注入量"""
     async with async_session() as s:
         result = await s.execute(
-            select(EjaculationData.volume)
-            .filter(EjaculationData.userid == userid, EjaculationData.date == get_today())
+            select(EjaculationData.volume).filter(EjaculationData.userid == userid, EjaculationData.date == get_today())
         )
         return result.scalar() or 0.0
 
@@ -287,7 +278,9 @@ async def get_today_ejaculation_data(userid: int) -> float:
 async def punish_all_inactive_users() -> None:
     """所有不活跃的用户, 即上次打胶时间超过一天的用户, 所有jj_length大于1将受到减少0--1随机的惩罚"""
     async with async_session() as s:
-        result = await s.execute(select(UserData).filter(UserData.last_masturbation_time < (time.time() - 86400), UserData.jj_length > 1))
+        result = await s.execute(
+            select(UserData).filter(UserData.last_masturbation_time < (time.time() - 86400), UserData.jj_length > 1)
+        )
         for user in result.scalars():
             user.jj_length = round(user.jj_length - random.random(), 3)
         await s.commit()

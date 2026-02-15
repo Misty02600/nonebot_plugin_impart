@@ -1,4 +1,5 @@
 """绘画图表模块"""
+
 import random
 from io import BytesIO
 from pathlib import Path
@@ -135,7 +136,6 @@ class DrawBarChart:
         img_byte = BytesIO()
         image.save(img_byte, format="PNG")
         return img_byte.getvalue()
-
 
     async def draw_line_chart(self, data: Dict[str, float]):
         """画折线图, 传入一个字典, key是str类型的用户名字, value是对应用户的注入量"""
