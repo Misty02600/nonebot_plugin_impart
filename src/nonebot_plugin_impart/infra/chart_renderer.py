@@ -82,7 +82,9 @@ class ChartRenderer:
         # 构建 RankEntry 列表
         entries: list[RankEntry] = []
         for rank, userid, nickname, avatar_url, jj_length in rank_data:
-            bar_width = (abs(jj_length) / max_abs_length * 100) if max_abs_length > 0 else 0
+            bar_width = (
+                (abs(jj_length) / max_abs_length * 100) if max_abs_length > 0 else 0
+            )
             entries.append(
                 {
                     "rank": rank,

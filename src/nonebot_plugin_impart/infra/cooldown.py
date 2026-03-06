@@ -38,7 +38,9 @@ class CooldownManager:
 
     # region 通用方法
 
-    def _check(self, uid: str, store: dict[str, float], cd_time: int) -> tuple[bool, float]:
+    def _check(
+        self, uid: str, store: dict[str, float], cd_time: int
+    ) -> tuple[bool, float]:
         """通用冷却检查
 
         SUPERUSER 自动跳过所有 CD。

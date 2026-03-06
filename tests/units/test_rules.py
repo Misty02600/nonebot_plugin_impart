@@ -61,39 +61,82 @@ class TestShouldTriggerCiduo:
 
     # xnn + 达到阈值 → True
     def test_xnn_at_threshold(self):
-        assert should_trigger_ciduo(target_state=LengthState(3.0), today_injection_ml=500.0) is True
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(3.0), today_injection_ml=500.0
+            )
+            is True
+        )
 
     # xnn + 超过阈值 → True
     def test_xnn_above_threshold(self):
-        assert should_trigger_ciduo(target_state=LengthState(0.01), today_injection_ml=999.0) is True
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(0.01), today_injection_ml=999.0
+            )
+            is True
+        )
 
     # xnn + 未达阈值 → False
     def test_xnn_below_threshold(self):
-        assert should_trigger_ciduo(target_state=LengthState(3.0), today_injection_ml=499.99) is False
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(3.0), today_injection_ml=499.99
+            )
+            is False
+        )
 
     # 非 xnn（正值大于 5）+ 达到阈值 → False
     def test_not_xnn_large_positive(self):
-        assert should_trigger_ciduo(target_state=LengthState(10.0), today_injection_ml=600.0) is False
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(10.0), today_injection_ml=600.0
+            )
+            is False
+        )
 
     # 非 xnn（负值）+ 达到阈值 → False
     def test_negative_world(self):
-        assert should_trigger_ciduo(target_state=LengthState(-5.0), today_injection_ml=600.0) is False
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(-5.0), today_injection_ml=600.0
+            )
+            is False
+        )
 
     # 非 xnn（零值）+ 达到阈值 → False
     def test_zero_not_xnn(self):
-        assert should_trigger_ciduo(target_state=LengthState(0.0), today_injection_ml=600.0) is False
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(0.0), today_injection_ml=600.0
+            )
+            is False
+        )
 
     # xnn 上界（5.0）+ 达到阈值 → True
     def test_xnn_upper_boundary(self):
-        assert should_trigger_ciduo(target_state=LengthState(5.0), today_injection_ml=500.0) is True
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(5.0), today_injection_ml=500.0
+            )
+            is True
+        )
 
     # xnn 刚超出（5.001）+ 达到阈值 → False
     def test_just_above_xnn(self):
-        assert should_trigger_ciduo(target_state=LengthState(5.001), today_injection_ml=500.0) is False
+        assert (
+            should_trigger_ciduo(
+                target_state=LengthState(5.001), today_injection_ml=500.0
+            )
+            is False
+        )
 
     # 注入量恰好 0 → False
     def test_zero_injection(self):
-        assert should_trigger_ciduo(target_state=LengthState(3.0), today_injection_ml=0.0) is False
+        assert (
+            should_trigger_ciduo(target_state=LengthState(3.0), today_injection_ml=0.0)
+            is False
+        )
 
 
 # ═══════════════════════════════════════════════════════
@@ -143,9 +186,12 @@ class TestCalcPkEffectiveWinProbability:
     """xnn 时胜率减半。"""
 
     def test_non_xnn_unchanged(self):
-        assert calc_pk_effective_win_probability(
-            base_probability=0.5, attacker_state=LengthState(10.0)
-        ) == 0.5
+        assert (
+            calc_pk_effective_win_probability(
+                base_probability=0.5, attacker_state=LengthState(10.0)
+            )
+            == 0.5
+        )
 
     def test_xnn_halved(self):
         assert calc_pk_effective_win_probability(
@@ -160,21 +206,30 @@ class TestCalcPkEffectiveWinProbability:
 
     def test_xnn_boundary_just_above(self):
         """5.001 不在 xnn 区间。"""
-        assert calc_pk_effective_win_probability(
-            base_probability=0.8, attacker_state=LengthState(5.001)
-        ) == 0.8
+        assert (
+            calc_pk_effective_win_probability(
+                base_probability=0.8, attacker_state=LengthState(5.001)
+            )
+            == 0.8
+        )
 
     def test_negative_world(self):
         """负值世界不受 xnn debuff。"""
-        assert calc_pk_effective_win_probability(
-            base_probability=0.5, attacker_state=LengthState(-10.0)
-        ) == 0.5
+        assert (
+            calc_pk_effective_win_probability(
+                base_probability=0.5, attacker_state=LengthState(-10.0)
+            )
+            == 0.5
+        )
 
     def test_zero_base(self):
         """基础胜率 0 乘 0.5 仍是 0。"""
-        assert calc_pk_effective_win_probability(
-            base_probability=0.0, attacker_state=LengthState(3.0)
-        ) == 0.0
+        assert (
+            calc_pk_effective_win_probability(
+                base_probability=0.0, attacker_state=LengthState(3.0)
+            )
+            == 0.0
+        )
 
 
 # ═══════════════════════════════════════════════════════
@@ -242,7 +297,9 @@ class TestCalcNormalizedWinProbability:
 
     def test_equal_rates(self):
         """相同胜率 → 50%。"""
-        assert calc_normalized_win_probability(wa_eff=0.5, wb_eff=0.5) == pytest.approx(0.5)
+        assert calc_normalized_win_probability(wa_eff=0.5, wb_eff=0.5) == pytest.approx(
+            0.5
+        )
 
     def test_a_stronger(self):
         """A 胜率更高 → P(A) > 0.5。"""

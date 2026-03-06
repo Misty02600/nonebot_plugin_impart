@@ -83,7 +83,9 @@ class SuoCopy(_JJBotBase, frozen=True):
         return f"{self.pronoun}还没有创建{self.jj_name}喵, 咱帮{self.pronoun}创建了喵, 目前长度是10cm喵"
 
     def challenging(self) -> str:
-        return f"{self.pronoun}的{self.jj_name}长度在任务范围内，不准嗦！请专心与群友pk！"
+        return (
+            f"{self.pronoun}的{self.jj_name}长度在任务范围内，不准嗦！请专心与群友pk！"
+        )
 
     def finish(self) -> str:
         return f"{self.pronoun}的{self.jj_name}很满意喵, 嗦长了{self.delta}cm喵, 目前长度为{self.length}cm喵"

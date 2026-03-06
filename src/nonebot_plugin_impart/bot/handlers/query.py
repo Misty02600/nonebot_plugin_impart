@@ -43,7 +43,9 @@ async def query_handler(
         )
         msg = nq.abyss_lord() if abs(length) >= 30 else nq.girl()
     else:
-        qc = QueryCopy(pronoun=pronoun, jj_name=pick_jj_alias(), length=length, prob=prob)
+        qc = QueryCopy(
+            pronoun=pronoun, jj_name=pick_jj_alias(), length=length, prob=prob
+        )
         if length >= 30:
             msg = qc.god()
         elif length > 5:

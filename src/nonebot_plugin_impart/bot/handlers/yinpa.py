@@ -190,7 +190,8 @@ async def execute_tou(
             extra += ciduo_msg
 
     await matcher.send(
-        repo + extra
+        repo
+        + extra
         + MessageSegment.image(f"https://q1.qlogo.cn/g?b=qq&nk={target.user_id}&s=640"),
     )
 
@@ -308,10 +309,10 @@ yinpa_matcher = on_regex(
     priority=20,
     block=True,
     handlers=[
-        group_enabled_check,    # 1. 群聊启用检查
-        yinpa_cd_check,         # 2. CD 检查（解析 RequesterCtx）
-        positive_world_guard,   # 3. 世界校验：仅正值
-        execute_tou,            # 4. 记 CD + 菜单 + 结算 + 雌堕（解析 TargetCtx）
+        group_enabled_check,  # 1. 群聊启用检查
+        yinpa_cd_check,  # 2. CD 检查（解析 RequesterCtx）
+        positive_world_guard,  # 3. 世界校验：仅正值
+        execute_tou,  # 4. 记 CD + 菜单 + 结算 + 雌堕（解析 TargetCtx）
     ],
 )
 
@@ -321,11 +322,11 @@ zha_matcher = on_regex(
     priority=20,
     block=True,
     handlers=[
-        group_enabled_check,    # 1. 群聊启用检查
-        yinpa_cd_check,         # 2. CD 检查（解析 RequesterCtx）
-        negative_world_guard,   # 3. 世界校验：仅负值
+        group_enabled_check,  # 1. 群聊启用检查
+        yinpa_cd_check,  # 2. CD 检查（解析 RequesterCtx）
+        negative_world_guard,  # 3. 世界校验：仅负值
         positive_target_guard,  # 4. 目标校验：目标必须正值（解析 TargetCtx）
-        execute_zha,            # 5. 记 CD + 菜单 + 结算
+        execute_zha,  # 5. 记 CD + 菜单 + 结算
     ],
 )
 

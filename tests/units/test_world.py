@@ -52,14 +52,14 @@ class TestXnnZone:
     @pytest.mark.parametrize(
         ("length", "expected"),
         [
-            (0.0, False),       # 零不是 xnn（零归负值）
-            (0.001, True),      # 刚进入正值
-            (0.01, True),       # floor 值
+            (0.0, False),  # 零不是 xnn（零归负值）
+            (0.001, True),  # 刚进入正值
+            (0.01, True),  # floor 值
             (1.0, True),
-            (5.0, True),        # 上界包含
-            (5.001, False),     # 刚超出
+            (5.0, True),  # 上界包含
+            (5.001, False),  # 刚超出
             (30.0, False),
-            (-1.0, False),      # 负值不可能是 xnn
+            (-1.0, False),  # 负值不可能是 xnn
             (-5.0, False),
         ],
         ids=[

@@ -42,6 +42,7 @@ def pick_hole_alias() -> str:
     """从配置别名列表中随机选取一个负值世界名称。"""
     return random.choice(plugin_config.hole_aliases)
 
+
 # region DataManager
 
 _engine = create_engine(get_plugin_data_dir() / "impart.db")
@@ -133,7 +134,11 @@ AtTarget = Annotated[str, Depends(get_at)]
 
 def get_ban_id_set() -> set[str]:
     """获取白名单 ID 集合"""
-    return set(plugin_config.ban_id_list.split(",")) if plugin_config.ban_id_list else set()
+    return (
+        set(plugin_config.ban_id_list.split(","))
+        if plugin_config.ban_id_list
+        else set()
+    )
 
 
 BanIdSet = Annotated[set[str], Depends(get_ban_id_set)]
@@ -254,13 +259,19 @@ async def _get_target_ctx(
 
     # 查询目标信息
     card = next(
-        (prep["card"] or prep["nickname"]
-         for prep in prep_list if prep["user_id"] == int(lucky_user)),
+        (
+            prep["card"] or prep["nickname"]
+            for prep in prep_list
+            if prep["user_id"] == int(lucky_user)
+        ),
         "群友",
     )
     sex = next(
-        (prep.get("sex", "unknown")
-         for prep in prep_list if prep["user_id"] == int(lucky_user)),
+        (
+            prep.get("sex", "unknown")
+            for prep in prep_list
+            if prep["user_id"] == int(lucky_user)
+        ),
         "unknown",
     )
 
@@ -309,12 +320,14 @@ def _select_admin(uid: int, prep_list: list[dict], ban_ids: set[str]) -> str | N
         目标 ID，无可用管理时返回 "no-admin" 哨兵值。
     """
     admin_ids = [
-        prep["user_id"] for prep in prep_list
+        prep["user_id"]
+        for prep in prep_list
         if prep["role"] == "admin" and str(prep["user_id"]) not in ban_ids
     ]
     if not admin_ids:
         admin_ids = [
-            prep["user_id"] for prep in prep_list
+            prep["user_id"]
+            for prep in prep_list
             if prep["role"] == "admin" and str(prep["user_id"]) in ban_ids
         ]
     if uid in admin_ids:
@@ -325,7 +338,10 @@ def _select_admin(uid: int, prep_list: list[dict], ban_ids: set[str]) -> str | N
 
 
 def _select_member(
-    uid: int, prep_list: list[dict], at: str, ban_ids: set[str],
+    uid: int,
+    prep_list: list[dict],
+    at: str,
+    ban_ids: set[str],
 ) -> str | None:
     """随机选择一位群友作为目标。
 
