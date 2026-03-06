@@ -15,7 +15,6 @@ from typing import TypedDict
 
 from jinja2 import Environment, FileSystemLoader
 from nonebot import logger
-from nonebot_plugin_htmlrender.browser import get_new_page
 
 # region 路径常量
 _PKG_DIR = Path(__file__).resolve().parent
@@ -180,6 +179,9 @@ class ChartRenderer:
         render_html.write_text(html_doc, encoding="utf-8")
 
         file_url = render_html.as_uri()
+
+        # 延迟导入 htmlrender，避免在不需要图表渲染的测试中触发 Playwright 启动。
+        from nonebot_plugin_htmlrender.browser import get_new_page
 
         async with get_new_page(device_scale_factor=2) as page:
             await page.goto(file_url, wait_until="networkidle")
