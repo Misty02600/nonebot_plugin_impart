@@ -25,5 +25,6 @@ async def after_nonebot_init(after_nonebot_init: None):
     driver = nonebot.get_driver()
     driver.register_adapter(OnebotV11Adapter)
 
-    # 加载插件
-    nonebot.load_from_toml("pyproject.toml")
+    # 加载插件（如果尚未由 units conftest 加载）
+    if not nonebot.get_plugin("nonebot_plugin_impart"):
+        nonebot.load_from_toml("pyproject.toml")
