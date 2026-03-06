@@ -94,7 +94,7 @@ asyncio_default_fixture_loop_scope = "session"
 [tool.ruff]
 line-length = 88                       # 每行最大字符数（与 Black 保持一致）
 src = ["src", "tests/units"]           # 源代码目录（用于判断导入是本地模块还是第三方模块）
-include = ["src/**", "tests/units/**"] # 仅检查 src 和 tests/units 目录
+include = ["src/**/*.py", "src/**/*.pyi", "tests/units/**/*.py", "tests/units/**/*.pyi"] # 仅检查 src 和 tests/units 目录下的 Python 文件
 extend-exclude = ["scripts"]           # 脚本目录不做 lint 检查
 
 [tool.ruff.format]

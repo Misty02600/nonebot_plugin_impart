@@ -10,7 +10,6 @@ import pytest
 
 from nonebot_plugin_impart.core.world import LengthState
 
-
 # ── 正值世界 / 负值世界 ──────────────────────────────
 
 
