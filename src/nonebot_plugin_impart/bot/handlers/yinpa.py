@@ -91,6 +91,7 @@ async def positive_target_guard(
 
 # region 透群友执行 handler
 
+
 # TODO 没必要把群主到群友的逻辑全塞一起，适当拆分事件处理函数更优雅
 async def execute_tou(
     matcher: Matcher,
@@ -201,6 +202,7 @@ async def execute_tou(
 # region 榨群友执行 handler
 
 # TODO 同样的，拆分事件处理函数给不同matcher用更优雅
+
 
 async def execute_zha(
     matcher: Matcher,
