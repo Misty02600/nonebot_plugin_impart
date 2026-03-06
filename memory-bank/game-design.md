@@ -204,15 +204,28 @@ CD 记录在 execute handler 内部（确保 PkCtx 已成功解析）。
 
 ### 2.7 日/透/榨 群友体系（`yinpa.py`）
 
-**触发**：两组 matcher：
-- 正值组：`^(日|透)(群友|群主|管理)$`（`yinpa_matcher`）
-- 负值组：`^(榨)(群友|群主|管理)$`（`zha_matcher`）
+**触发**：6 个独立 matcher（按目标类型 × 指令类型拆分）：
+
+| Matcher | 正则 | 用途 |
+|---|---|---|
+| `yinpa_matcher` | `^(日\|透)(群友)(?:\s+.*)?$` | 透群友（支持 @指定目标） |
+| `yinpa_owner_matcher` | `^(日\|透)(群主)(?:\s+.*)?$` | 透群主（固定目标） |
+| `yinpa_admin_matcher` | `^(日\|透)(管理)(?:\s+.*)?$` | 透管理（随机选取） |
+| `zha_matcher` | `^(榨)(群友)(?:\s+.*)?$` | 榨群友（支持 @指定目标） |
+| `zha_owner_matcher` | `^(榨)(群主)(?:\s+.*)?$` | 榨群主（固定目标） |
+| `zha_admin_matcher` | `^(榨)(管理)(?:\s+.*)?$` | 榨管理（随机选取） |
+
+> **@ 行为**：所有 matcher 的正则均允许尾部带 `@` 内容（`(?:\s+.*)?$`），但仅 `群友` 命令在 `_select_member` 中提取 `@` 指定目标。`群主/管理` 命令中即使用户写了 `@`，也不影响目标选取逻辑。
 
 #### 2.7.1 Pipeline 架构
 
 ```
-日/透群友: group_enabled_check → yinpa_cd_check → positive_world_guard → execute_tou
-榨群友:    group_enabled_check → yinpa_cd_check → negative_world_guard → positive_target_guard → execute_zha
+日/透群友:   group_enabled_check → yinpa_cd_check → positive_world_guard → execute_tou
+日/透群主:   group_enabled_check → yinpa_cd_check → positive_world_guard → execute_tou
+日/透管理:   group_enabled_check → yinpa_cd_check → positive_world_guard → execute_tou
+榨群友:      group_enabled_check → yinpa_cd_check → negative_world_guard → positive_target_guard → execute_zha
+榨群主:      group_enabled_check → yinpa_cd_check → negative_world_guard → positive_target_guard → execute_zha
+榨管理:      group_enabled_check → yinpa_cd_check → negative_world_guard → positive_target_guard → execute_zha
 ```
 
 共享数据通过 DI 缓存：

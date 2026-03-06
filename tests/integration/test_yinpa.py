@@ -18,6 +18,7 @@ from .conftest import ANY_MSG, GROUP_ID, TARGET_ID, USER_ID
 
 # TargetCtx DI 需要 OB11 Bot 实例（有 get_group_member_list 方法）
 from nonebot.adapters.onebot.v11 import Bot as OB11Bot
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 MEMBER_LIST = [
     {
@@ -45,8 +46,6 @@ MEMBER_LIST = [
 
 
 def _tou_event(msg: str = "透群友"):
-    from nonebot.adapters.onebot.v11 import Message
-
     return fake_group_message_event_v11(
         user_id=USER_ID, group_id=GROUP_ID,
         message=Message(msg), raw_message=msg,
@@ -54,11 +53,29 @@ def _tou_event(msg: str = "透群友"):
 
 
 def _zha_event(msg: str = "榨群友"):
-    from nonebot.adapters.onebot.v11 import Message
-
     return fake_group_message_event_v11(
         user_id=USER_ID, group_id=GROUP_ID,
         message=Message(msg), raw_message=msg,
+    )
+
+
+def _zha_at_event(msg: str = "榨群友", at_qq: str = str(TARGET_ID)):
+    segments = MessageSegment.text(msg + " ") + MessageSegment.at(at_qq)
+    return fake_group_message_event_v11(
+        user_id=USER_ID,
+        group_id=GROUP_ID,
+        message=Message(segments),
+        raw_message=msg,
+    )
+
+
+def _tou_at_event(msg: str = "透群友", at_qq: str = str(TARGET_ID)):
+    segments = MessageSegment.text(msg + " ") + MessageSegment.at(at_qq)
+    return fake_group_message_event_v11(
+        user_id=USER_ID,
+        group_id=GROUP_ID,
+        message=Message(segments),
+        raw_message=msg,
     )
 
 
@@ -181,7 +198,6 @@ async def test_zha_positive_blocked(app: App, fresh_env):
     dm, cd = fresh_env
     await dm.add_new_user(USER_ID)
     await dm.set_jj_length_absolute(USER_ID, 10.0)
-
     from nonebot_plugin_impart.bot.handlers.yinpa import zha_matcher
 
     async with app.test_matcher(zha_matcher) as ctx:
@@ -190,6 +206,114 @@ async def test_zha_positive_blocked(app: App, fresh_env):
         ctx.receive_event(bot, event)
         ctx.should_call_send(event, ANY_MSG, result=None, at_sender=True)
         ctx.should_finished(zha_matcher)
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_zha_member_at_target(app: App, fresh_env):
+    """榨群友 + @ 指定目标应命中 matcher 并正常执行。"""
+    dm, cd = fresh_env
+    await dm.add_new_user(USER_ID)
+    await dm.set_jj_length_absolute(USER_ID, -5.0)
+    await dm.add_new_user(TARGET_ID)
+    await dm.set_jj_length_absolute(TARGET_ID, 10.0)
+
+    from nonebot_plugin_impart.bot.handlers.yinpa import zha_matcher
+
+    with patch(
+        "nonebot_plugin_impart.bot.handlers.yinpa.asyncio.sleep",
+        new_callable=AsyncMock,
+    ):
+        async with app.test_matcher(zha_matcher) as ctx:
+            bot = ctx.create_bot(base=OB11Bot)
+            event = _zha_at_event()
+            ctx.receive_event(bot, event)
+            ctx.should_call_api(
+                "get_group_member_list",
+                {"group_id": GROUP_ID},
+                result=MEMBER_LIST,
+            )
+            ctx.should_call_send(event, ANY_MSG, result=None)
+            ctx.should_call_send(event, ANY_MSG, result=None)
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_tou_admin_at_allowed(app: App, fresh_env):
+    """透管理 + @ 可触发，且目标依然按管理随机选择。"""
+    dm, cd = fresh_env
+    await dm.add_new_user(USER_ID)
+    await dm.set_jj_length_absolute(USER_ID, 10.0)
+    await dm.add_new_user(TARGET_ID)
+    await dm.set_jj_length_absolute(TARGET_ID, 10.0)
+
+    admin_member_list = [
+        {
+            "user_id": USER_ID,
+            "nickname": "TestUser",
+            "card": "测试用户",
+            "role": "member",
+            "sex": "male",
+        },
+        {
+            "user_id": TARGET_ID,
+            "nickname": "TargetUser",
+            "card": "目标用户",
+            "role": "admin",
+            "sex": "male",
+        },
+        {
+            "user_id": 22222222,
+            "nickname": "Owner",
+            "card": "群主大人",
+            "role": "owner",
+            "sex": "male",
+        },
+    ]
+
+    from nonebot_plugin_impart.bot.handlers.yinpa import yinpa_admin_matcher
+
+    with patch(
+        "nonebot_plugin_impart.bot.handlers.yinpa.asyncio.sleep",
+        new_callable=AsyncMock,
+    ):
+        async with app.test_matcher(yinpa_admin_matcher) as ctx:
+            bot = ctx.create_bot(base=OB11Bot)
+            event = _tou_at_event("透管理")
+            ctx.receive_event(bot, event)
+            ctx.should_call_api(
+                "get_group_member_list",
+                {"group_id": GROUP_ID},
+                result=admin_member_list,
+            )
+            ctx.should_call_send(event, ANY_MSG, result=None)
+            ctx.should_call_send(event, ANY_MSG, result=None)
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_zha_owner_at_allowed(app: App, fresh_env):
+    """榨群主 + @ 可触发，且目标依然固定群主。"""
+    dm, cd = fresh_env
+    await dm.add_new_user(USER_ID)
+    await dm.set_jj_length_absolute(USER_ID, -5.0)
+    await dm.add_new_user(TARGET_ID)
+    await dm.set_jj_length_absolute(TARGET_ID, 10.0)
+
+    from nonebot_plugin_impart.bot.handlers.yinpa import zha_owner_matcher
+
+    with patch(
+        "nonebot_plugin_impart.bot.handlers.yinpa.asyncio.sleep",
+        new_callable=AsyncMock,
+    ):
+        async with app.test_matcher(zha_owner_matcher) as ctx:
+            bot = ctx.create_bot(base=OB11Bot)
+            event = _zha_at_event("榨群主")
+            ctx.receive_event(bot, event)
+            ctx.should_call_api(
+                "get_group_member_list",
+                {"group_id": GROUP_ID},
+                result=MEMBER_LIST,
+            )
+            ctx.should_call_send(event, ANY_MSG, result=None)
+            ctx.should_call_send(event, ANY_MSG, result=None)
 
 
 @pytest.mark.asyncio(loop_scope="session")
@@ -298,13 +422,13 @@ async def test_tou_qunzhu_variant(app: App, fresh_env):
     await dm.add_new_user(TARGET_ID)
     await dm.set_jj_length_absolute(TARGET_ID, 10.0)
 
-    from nonebot_plugin_impart.bot.handlers.yinpa import yinpa_matcher
+    from nonebot_plugin_impart.bot.handlers.yinpa import yinpa_owner_matcher
 
     with patch(
         "nonebot_plugin_impart.bot.handlers.yinpa.asyncio.sleep",
         new_callable=AsyncMock,
     ):
-        async with app.test_matcher(yinpa_matcher) as ctx:
+        async with app.test_matcher(yinpa_owner_matcher) as ctx:
             bot = ctx.create_bot(base=OB11Bot)
             event = _tou_event("透群主")
             ctx.receive_event(bot, event)
@@ -531,9 +655,9 @@ async def test_tou_self_target_owner(app: App, fresh_env):
         },
     ]
 
-    from nonebot_plugin_impart.bot.handlers.yinpa import yinpa_matcher
+    from nonebot_plugin_impart.bot.handlers.yinpa import yinpa_owner_matcher
 
-    async with app.test_matcher(yinpa_matcher) as ctx:
+    async with app.test_matcher(yinpa_owner_matcher) as ctx:
         bot = ctx.create_bot(base=OB11Bot)
         event = _tou_event("透群主")
         ctx.receive_event(bot, event)
@@ -576,9 +700,9 @@ async def test_tou_no_admin_target(app: App, fresh_env):
         },
     ]
 
-    from nonebot_plugin_impart.bot.handlers.yinpa import yinpa_matcher
+    from nonebot_plugin_impart.bot.handlers.yinpa import yinpa_admin_matcher
 
-    async with app.test_matcher(yinpa_matcher) as ctx:
+    async with app.test_matcher(yinpa_admin_matcher) as ctx:
         bot = ctx.create_bot(base=OB11Bot)
         event = _tou_event("透管理")
         ctx.receive_event(bot, event)
