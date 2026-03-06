@@ -20,7 +20,11 @@ from ..infra.chart_renderer import ChartRenderer
 from ..infra.cooldown import CooldownManager
 from ..infra.data_manager import DataManager
 from ..infra.database import create_engine, create_session_factory, init_db
-from .texts.interaction_texts import no_admin_target, self_target_owner, target_not_found
+from .texts.interaction_texts import (
+    no_admin_target,
+    self_target_owner,
+    target_not_found,
+)
 
 require("nonebot_plugin_localstore")
 from nonebot_plugin_localstore import get_plugin_data_dir

@@ -27,7 +27,6 @@ from nonebot_plugin_impart.core.rules import (
 )
 from nonebot_plugin_impart.core.world import LengthState
 
-
 # ═══════════════════════════════════════════════════════
 #  常量验证
 # ═══════════════════════════════════════════════════════

@@ -11,7 +11,7 @@
 import nonebot
 
 
-def pytest_configure(config):  # noqa: ARG001
+def pytest_configure(config):  # pyright: ignore[reportUnusedParameter]
     """在收集测试之前初始化 NoneBot 并加载插件。"""
     try:
         nonebot.get_driver()

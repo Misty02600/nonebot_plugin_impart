@@ -8,14 +8,13 @@
 """
 
 import time
-from unittest.mock import patch
 
 import pytest
 
 from nonebot_plugin_impart.infra.cooldown import CooldownManager
 
 
-@pytest.fixture()
+@pytest.fixture
 def cm() -> CooldownManager:
     """普通用户的 CooldownManager。"""
     return CooldownManager(
@@ -26,7 +25,7 @@ def cm() -> CooldownManager:
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def cm_su() -> CooldownManager:
     """带 SUPERUSER 的 CooldownManager。"""
     return CooldownManager(
@@ -47,9 +46,9 @@ class TestBasicFlow:
     """check → record → check 流程。"""
 
     def test_first_check_allowed(self, cm: CooldownManager):
-        ok, remain = cm.check_dj("100")
+        ok, _remain = cm.check_dj("100")
         assert ok is True
-        assert remain == 0.0
+        assert _remain == 0.0
 
     def test_in_cooldown(self, cm: CooldownManager):
         cm.record_dj("100")
@@ -69,7 +68,7 @@ class TestBasicFlow:
         """恰好到期。"""
         fake_past = time.time() - 10  # 恰好等于 dj_cd_time
         cm._cd_data["100"] = fake_past
-        ok, remain = cm.check_dj("100")
+        ok, _remain = cm.check_dj("100")
         assert ok is True
 
     def test_cooldown_almost_expired(self, cm: CooldownManager):
@@ -149,13 +148,13 @@ class TestSuperuserBypass:
 
     def test_su_dj_always_allowed(self, cm_su: CooldownManager):
         cm_su.record_dj("9999")
-        ok, remain = cm_su.check_dj("9999")
+        ok, _remain = cm_su.check_dj("9999")
         assert ok is True
-        assert remain == 0.0
+        assert _remain == 0.0
 
     def test_su_pk_always_allowed(self, cm_su: CooldownManager):
         cm_su.record_pk("8888")
-        ok, remain = cm_su.check_pk("8888")
+        ok, _remain = cm_su.check_pk("8888")
         assert ok is True
 
     def test_su_suo_always_allowed(self, cm_su: CooldownManager):
