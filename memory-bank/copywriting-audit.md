@@ -45,9 +45,9 @@
 |----|----------|---------|--------|---------|
 | S01 | `suo_cd(remaining)` | `你已经嗦不动了喵, 请等待{remaining}秒后再嗦喵` | `suo.py` CD 检查 | ✅ test_suo_cd_blocks |
 | S02 | `SuoCopy.create()` | `{pronoun}还没有创建{jj_name}喵, 咱帮{pronoun}创建了喵, 目前长度是10cm喵` | `suo.py` 目标不存在 | ✅ test_suo_creates_new_target |
-| S03 | `SuoCopy.challenging()` | `{pronoun}的{jj_name}长度在任务范围内，不准嗦！请专心与群友pk！` | `suo.py` 目标挑战中 | ❌ 无 |
+| S03 | `SuoCopy.challenging()` | `{pronoun}的{jj_name}长度在任务范围内，不准嗦！请专心与群友pk！` | `suo.py` 目标挑战中 | ✅ test_suo_target_is_challenging |
 | S04 | `SuoCopy.finish()` | `{pronoun}的{jj_name}很满意喵, 嗦长了{delta}cm喵, 目前长度为{length}cm喵` | `suo.py` 正常结算 | ✅ test_suo_normal_increases_length |
-| S05 | `SuoCopy.trigger_challenge()` | `{pronoun}的{jj_name}很满意喵, 嗦长了{delta}cm喵...已为{pronoun}开启✨"登神长阶"✨...` | `suo.py` 触发挑战 | ❌ 无 |
+| S05 | `SuoCopy.trigger_challenge()` | `{pronoun}的{jj_name}很满意喵, 嗦长了{delta}cm喵...已为{pronoun}开启✨“登神长阶”✨...` | `suo.py` 触发挑战 | ✅ test_suo_triggers_challenge |
 
 ### 2.3 查询 (query) — 正值
 
@@ -76,7 +76,7 @@
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
 | T01 | `tian_cd(remaining)` | `你已经舔不动了喵, 请等待{remaining}秒后再舔喵` | `tian.py` CD 检查 | ❌ 无独立测试（通过共享 CD 间接覆盖） |
-| T02 | `TianCopy.challenging()` | `深渊的试炼尚未结束！请专心与群友磨豆腐喵！` | `tian.py` 目标挑战中 | ❌ 无 |
+| T02 | `TianCopy.challenging()` | `深渊的试炼尚未结束！请专心与群友磨豆腐喵！` | `tian.py` 目标挑战中 | ✅ test_tian_target_is_challenging |
 | T03 | `TianCopy.finish()` | `{pronoun}的{hole_name}很满意喵, 舔深了{delta}cm喵, 目前深度为{depth}cm喵` | `tian.py` 正常结算 | ✅ test_tian_normal_increases_depth |
 | T04 | `TianCopy.trigger_challenge()` | `{pronoun}的{hole_name}很满意喵, 舔深了{delta}cm喵...已为{pronoun}开启🕳️「深渊试炼」🕳️...` | `tian.py` 触发挑战 | ✅ test_tian_challenge_trigger_at_depth_25 |
 
@@ -107,27 +107,27 @@
 
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
-| PK06 | `PkCopy.self_challenge_start()` | `{botname}检测到你的{jj_name}长度超过25cm，已为你开启✨"登神长阶"✨...` | `pk.py → _build_self_challenge_msg` 赢+CHALLENGE_STARTED | ❌ 无 |
-| PK07 | `PkCopy.self_challenge_success()` | `🎉恭喜你完成登神挑战🎉\n你的{jj_name}长度已超过30cm，授予你🎊"牛々の神"🎊称号...` | `pk.py → _build_self_challenge_msg` 赢+SUCCESS | ❌ 无 |
-| PK08 | `PkCopy.self_challenge_failed()` | `很遗憾，登神挑战失败，别气馁啦！\n你的{jj_name}长度缩短了5cm喵...` | `pk.py → _build_self_challenge_msg` 输+FAILED | ❌ 无 |
-| PK09 | `PkCopy.self_fall()` | `很遗憾，你跌落神坛，别气馁啦！\n你的{jj_name}长度缩短了5cm喵...` | `pk.py → _build_self_challenge_msg` 输+COMPLETED_REDUCE | ❌ 无 |
+| PK06 | `PkCopy.self_challenge_start()` | `{botname}检测到你的{jj_name}长度超过25cm，已为你开启✨“登神长阶”✨...` | `pk.py → _build_self_challenge_msg` 赢+CHALLENGE_STARTED | ✅ test_positive_pk_self_challenge_trigger |
+| PK07 | `PkCopy.self_challenge_success()` | `🎉恭喜你完成登神挑战🎉\n你的{jj_name}长度已超过30cm，授予你🎊“牛々の神”🎊称号...` | `pk.py → _build_self_challenge_msg` 赢+SUCCESS | ✅ test_positive_pk_self_challenge_success |
+| PK08 | `PkCopy.self_challenge_failed()` | `很遗憾，登神挑战失败，别气馊啦！\n你的{jj_name}长度缩短了5cm喵...` | `pk.py → _build_self_challenge_msg` 输+FAILED | ✅ test_positive_pk_self_challenge_failed |
+| PK09 | `PkCopy.self_fall()` | `很遗憾，你跌落神坛，别气馊啦！\n你的{jj_name}长度缩短了5cm喵...` | `pk.py → _build_self_challenge_msg` 输+COMPLETED_REDUCE | ✅ test_positive_pk_self_fall_from_god |
 
 ### 4.3 正值挑战状态（对方）
 
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
-| PK10 | `PkCopy.opp_challenge_failed()` | `由于你对决的胜利，{botname}检测到TA的{jj_name}长度已不足25cm，很遗憾，TA的登神挑战失败...` | `pk.py → _build_opponent_challenge_msg` 赢+FAILED | ❌ 无 |
+| PK10 | `PkCopy.opp_challenge_failed()` | `由于你对决的胜利，{botname}检测到TA的{jj_name}长度已不足25cm，很遗憾，TA的登神挑战失败...` | `pk.py → _build_opponent_challenge_msg` 赢+FAILED | ✅ test_positive_pk_opp_challenge_failed |
 | PK11 | `PkCopy.opp_fall()` | `由于你对决的胜利，{botname}检测到TA的{jj_name}长度已不足25cm，TA跌落神坛...` | `pk.py → _build_opponent_challenge_msg` 赢+COMPLETED_REDUCE | ❌ 无 |
-| PK12 | `PkCopy.opp_challenge_start()` | `由于你对决的失败...{botname}检测到TA的{jj_name}长度超过25cm，已为TA开启✨"登神长阶"✨` | `pk.py → _build_opponent_challenge_msg` 输+STARTED | ❌ 无 |
+| PK12 | `PkCopy.opp_challenge_start()` | `由于你对决的失败...{botname}检测到TA的{jj_name}长度超过25cm，已为TA开启✨“登神长阶”✨` | `pk.py → _build_opponent_challenge_msg` 输+STARTED | ✅ test_positive_pk_opp_challenge_trigger |
 | PK13 | `PkCopy.opp_challenge_success()` | `🎉恭喜你帮助TA完成登神挑战🎉\nTA的{jj_name}长度超过30cm，授予TA🎊"牛々の神"🎊称号` | `pk.py → _build_opponent_challenge_msg` 输+SUCCESS | ❌ 无 |
 
 ### 4.4 xnn 通知
 
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
-| PK14 | `xnn_enter()` | `\n你醒啦, 你已经变成xnn了！\n你当前的对决胜率减少50%...` | `pk.py → _build_xnn_notification` 输+LENGTH_NEAR_ZERO | ❌ 无独立测试（xnn_debuff 测试间接验证数据层但不验证文案） |
-| PK15 | `xnn_self_exit()` | `\n恭喜你成功挣脱了xnn状态喵！` | `pk.py → _build_xnn_notification` XNN_EXIT(自己) | ❌ 无 |
-| PK16 | `xnn_opp_enter()` | `\n对方已经变成xnn了喵！` | `pk.py → _build_xnn_notification` 赢+对方LENGTH_NEAR_ZERO | ❌ 无 |
+| PK14 | `xnn_enter()` | `\n你醒啦, 你已经变成xnn了！\n你当前的对决胜率减少50%...` | `pk.py → _build_xnn_notification` 输+LENGTH_NEAR_ZERO | ✅ test_positive_pk_xnn_enter_on_loss |
+| PK15 | `xnn_self_exit()` | `\n恭喜你成功挟脱了xnn状态喵！` | `pk.py → _build_xnn_notification` XNN_EXIT(自己) | ✅ test_positive_pk_xnn_self_exit_on_win |
+| PK16 | `xnn_opp_enter()` | `\n对方已经变成xnn了喵！` | `pk.py → _build_xnn_notification` 赢+对方LENGTH_NEAR_ZERO | ✅ test_positive_pk_opp_xnn_enter |
 | PK17 | `xnn_opp_exit()` | `\n对方已挣脱xnn状态喵！` | `pk.py → _build_xnn_notification` 对方XNN_EXIT | ❌ 无 |
 
 ---
@@ -148,10 +148,10 @@
 
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
-| NP04 | `NegPkCopy.self_challenge_start()` | `{botname}检测到你的{hole_name}深度超过25cm，已为你开启🕳️「坠入深渊」🕳️...` | `pk.py → _build_neg_self_challenge_msg` | ❌ 无 |
-| NP05 | `NegPkCopy.self_challenge_success()` | `🎉恭喜你完成深渊挑战🎉\n你的{hole_name}深度已超过30cm，授予你🎊"深淵の主"🎊称号...` | `pk.py → _build_neg_self_challenge_msg` | ❌ 无 |
-| NP06 | `NegPkCopy.self_challenge_failed()` | `很遗憾，深渊挑战失败，别气馁啦！\n你的{hole_name}深度减少了5cm喵...` | `pk.py → _build_neg_self_challenge_msg` | ❌ 无 |
-| NP07 | `NegPkCopy.self_fall()` | `很遗憾，你从深渊边缘跌落了，别气馁啦！\n你的{hole_name}深度减少了5cm喵...` | `pk.py → _build_neg_self_challenge_msg` | ❌ 无 |
+| NP04 | `NegPkCopy.self_challenge_start()` | `{botname}检测到你的{hole_name}深度超过25cm，已为你开启🕳️「坠入深渊」🕳️...` | `pk.py → _build_neg_self_challenge_msg` | ✅ test_negative_pk_self_challenge_trigger |
+| NP05 | `NegPkCopy.self_challenge_success()` | `🎉恭喜你完成深渊挑战🎉\n你的{hole_name}深度已超过30cm，授予你🎊“深淵の主”🎊称号...` | `pk.py → _build_neg_self_challenge_msg` | ✅ test_negative_pk_self_challenge_success |
+| NP06 | `NegPkCopy.self_challenge_failed()` | `很遗憾，深渊挑战失败，别气馊啦！\n你的{hole_name}深度减少了5cm喵...` | `pk.py → _build_neg_self_challenge_msg` | ✅ test_negative_pk_self_challenge_failed |
+| NP07 | `NegPkCopy.self_fall()` | `很遗憾，你从深渊边缘跌落了，别气馊啦！\n你的{hole_name}深度减少了5cm喵...` | `pk.py → _build_neg_self_challenge_msg` | ✅ test_negative_pk_self_fall_from_abyss |
 
 ### 5.3 负值挑战状态（对方）
 
@@ -171,10 +171,10 @@
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
 | Y01 | `YinpaMenuCopy.member()` | `现在咱将随机抽取一位幸运群友\n送给{user_card}色色！` | `yinpa.py → execute_tou` 群友 | ✅ test_tou_positive_normal |
-| Y02 | `YinpaMenuCopy.reverse_member()` | `{botname}发现你是xnn~现在咱将{user_card}\n送给{target_card}色色！` | `yinpa.py → execute_tou` xnn反转 | ❌ 无 |
-| Y03 | `YinpaMenuCopy.xnn_both()` | `{botname}发现你俩都是xnn喵~现在咱将{user_card}\n送给{target_card}色色！` | `yinpa.py → execute_tou` 双xnn | ❌ 无 |
+| Y02 | `YinpaMenuCopy.reverse_member()` | `{botname}发现你是xnn~现在咱将{user_card}\n送给{target_card}色色！` | `yinpa.py → execute_tou` xnn反转 | ✅ test_tou_xnn_reversed |
+| Y03 | `YinpaMenuCopy.xnn_both()` | `{botname}发现你俩都是xnn喵~现在咱将{user_card}\n送给{target_card}色色！` | `yinpa.py → execute_tou` 双xnn | ✅ test_tou_xnn_both |
 | Y04 | `YinpaMenuCopy.owner()` | `现在咱将把群主\n送给{user_card}色色！` | `yinpa.py → execute_tou` 群主 | ✅ test_tou_qunzhu_variant |
-| Y05 | `YinpaMenuCopy.admin()` | `现在咱将随机抽取一位幸运管理\n送给{user_card}色色！` | `yinpa.py → execute_tou` 管理 | ❌ 无 |
+| Y05 | `YinpaMenuCopy.admin()` | `现在咱将随机抽取一位幸运管理\n送给{user_card}色色！` | `yinpa.py → execute_tou` 管理 | ✅ test_tou_admin_at_allowed |
 | Y06 | `YinpaMenuCopy.reverse_owner()` | `{botname}发现你是xnn~现在咱将{user_card}\n送给群主色色！` | `yinpa.py → execute_tou` xnn透群主 | ❌ 无 |
 | Y07 | `YinpaMenuCopy.reverse_admin()` | `{botname}发现你是xnn~现在咱将{user_card}\n送给随机一位管理色色！` | `yinpa.py → execute_tou` xnn透管理 | ❌ 无 |
 
@@ -183,16 +183,16 @@
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
 | Y08 | `YinpaReport.active()` | `好欸！{req_user_card}(uid)用时{seconds}秒\n给 {target_card}(target_id) 注入了{ejaculation}毫升...` | `yinpa.py → execute_tou` 正常透 | ✅ test_tou_positive_normal |
-| Y09 | `YinpaReport.reversed()` | `好欸！{target_card}(target_id)用时{seconds}秒\n给 {req_user_card}(uid) 注入了...` | `yinpa.py → execute_tou` xnn被反透 | ❌ 无 |
-| Y10 | `YinpaReport.squeeze()` | `好欸！{target_card}(target_id)用时{seconds}秒\n把 {req_user_card}(uid) 榨到腿软...` | `yinpa.py → execute_tou` xnn透女生 | ❌ 无 |
-| Y11 | `YinpaReport.xnn_both()` | `好欸！{req_user_card}和{target_card}贴贴蹭蹭了{seconds}秒\n...互相注入...` | `yinpa.py → execute_tou` 双xnn | ❌ 无 |
+| Y09 | `YinpaReport.reversed()` | `好欸！{target_card}(target_id)用时{seconds}秒\n给 {req_user_card}(uid) 注入了...` | `yinpa.py → execute_tou` xnn被反透 | ✅ test_tou_xnn_reversed |
+| Y10 | `YinpaReport.squeeze()` | `好欸！{target_card}(target_id)用时{seconds}秒\n把 {req_user_card}(uid) 榨到腿软...` | `yinpa.py → execute_tou` xnn透女生 | ✅ test_tou_xnn_squeeze_female |
+| Y11 | `YinpaReport.xnn_both()` | `好欸！{req_user_card}和{target_card}贴贴蹭蹭了{seconds}秒\n...互相注入...` | `yinpa.py → execute_tou` 双xnn | ✅ test_tou_xnn_both |
 
 ### 6.3 榨群友
 
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
 | Z01 | `ZhaMenuCopy.member()` | `现在咱将随机抽取一位幸运群友\n送给{user_card}榨汁！` | `yinpa.py → execute_zha` 群友 | ✅ test_zha_negative_normal |
-| Z02 | `ZhaMenuCopy.owner()` | `现在咱将把群主\n送给{user_card}榨汁！` | `yinpa.py → execute_zha` 群主 | ❌ 无 |
+| Z02 | `ZhaMenuCopy.owner()` | `现在咱将把群主\n送给{user_card}榨汁！` | `yinpa.py → execute_zha` 群主 | ✅ test_zha_owner_at_allowed |
 | Z03 | `ZhaMenuCopy.admin()` | `现在咱将随机抽取一位幸运管理\n送给{user_card}榨汁！` | `yinpa.py → execute_zha` 管理 | ❌ 无 |
 | Z04 | `ZhaReport.finish()` | `好欸！{req_user_card}(uid)用时{seconds}秒\n把 {target_card}(target_id) 榨出了{ejaculation}毫升...` | `yinpa.py → execute_zha` 正常结算 | ✅ test_zha_negative_normal |
 | Z05 | `zha_no_male_target()` | `找不到男孩子送给你涩涩了喵，群友全是白河豚喵~` | `yinpa.py → positive_target_guard` 目标非正值 | ✅ test_zha_target_negative_blocked |
@@ -201,7 +201,7 @@
 
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
-| EV01 | `CiduoEvent.announce()` | `{user_card}(uid)被注入了太多脱氧核糖核酸...\n{user_card}的{jj_name}彻底萎缩消失了♡\n取而代之的是一个深度{depth}cm的{hole_name}♡\n{user_card}已经完全雌堕, 变成了女孩子♡` | `yinpa.py → _check_ciduo` | ❌ 无 |
+| EV01 | `CiduoEvent.announce()` | `{user_card}(uid)被注入了太多脱氧核糖核酸...\n{user_card}的{jj_name}彻底萝缩消失了♥\n取而代之的是一个深度{depth}cm的{hole_name}♥\n{user_card}已经完全雌堕, 变成了女孩子♥` | `yinpa.py → _check_ciduo` | ✅ test_tou_ciduo_trigger |
 
 ### 6.5 世界校验 / Guard 提示
 
@@ -222,8 +222,8 @@
 | ID | 函数/方法 | 文案模板 | 发送点 | 集成测试 |
 |----|----------|---------|--------|---------|
 | TS01 | `target_not_found(action)` | 透: `找不到可以下手的目标喵~`<br>榨: `找不到可以榨的目标喵~` | `dependencies.py → _get_target_ctx` | ❌ 无 |
-| TS02 | `self_target_owner(action)` | 透: `你透你自己?`<br>榨: `你榨你自己?` | `dependencies.py → _get_target_ctx` 群主自透 | ❌ 无 |
-| TS03 | `no_admin_target(action)` | 透: `喵喵喵 找不到群管理!`<br>榨: `喵喵喵 找不到可榨的群管理!` | `dependencies.py → _get_target_ctx` 无可选管理 | ❌ 无 |
+| TS02 | `self_target_owner(action)` | 透: `你透你自己?`<br>榨: `你榨你自己?` | `dependencies.py → _get_target_ctx` 群主自透 | ✅ test_tou_self_target_owner |
+| TS03 | `no_admin_target(action)` | 透: `喵喵喵 找不到群管理!`<br>榨: `喵喵喵 找不到可榨的群管理!` | `dependencies.py → _get_target_ctx` 无可选管理 | ✅ test_tou_no_admin_target |
 
 ---
 
@@ -253,15 +253,15 @@
 
 | 类别 | 总文案数 | 已覆盖 | 未覆盖 | 覆盖率 |
 |------|---------|--------|--------|--------|
-| 正值成长 (打胶/嗦/查询) | 9 + 4 | 8 | 5 (S03/S05/Q系列已全覆盖) | ~ 73% |
-| 负值成长 (开扣/舔/查询) | 6 + 2 | 6 | 2 (T01/T02) | ~ 75% |
-| 正值 PK + xnn | 17 | 5 | 12 | ~ 29% |
-| 负值 PK | 11 | 2 | 9 | ~ 18% |
-| 透群友 | 11 | 2 | 9 | ~ 18% |
-| 榨群友 | 5 | 3 | 2 | ~ 60% |
-| Guard/校验 | 9 | 7 | 2 (TS01–TS03) | ~ 78% |
-| 目标选择哨兵 | 3 | 0 | 3 | 0% |
-| 雌堕事件 | 1 | 0 | 1 | 0% |
+| 正值成长 (打胶/嗦/查询) | 9 + 4 | 11 | 2 | ~ 85% |
+| 负值成长 (开扣/舔/查询) | 6 + 2 | 7 | 1 (T01) | ~ 88% |
+| 正值 PK + xnn | 17 | 12 | 5 | ~ 71% |
+| 负值 PK | 11 | 6 | 5 | ~ 55% |
+| 透群友 | 11 | 9 | 2 (Y06/Y07) | ~ 82% |
+| 榨群友 | 5 | 4 | 1 (Z03) | ~ 80% |
+| Guard/校验 | 9 | 9 | 0 | 100% |
+| 目标选择哨兵 | 3 | 2 | 1 (TS01) | ~ 67% |
+| 雌堕事件 | 1 | 1 | 0 | 100% |
 | Handler 内联 | 11 | 0 | 11 | 0% |
 | 配置项 | 2 | 1 | 1 (help) | 50% |
 
@@ -271,26 +271,31 @@
 
 | 编号 | 测试场景 | 涉及文案 ID | 说明 |
 |------|---------|-------------|------|
-| **T-01** | PK 挑战触发（正值：长度从 <25 PK 至 ≥25） | PK06 | 当前只测了打胶触发，PK 触发挑战无测试 |
-| **T-02** | PK 挑战成功（正值：长度从 25-30 PK 至 ≥30） | PK07 | 牛子神称号授予无测试 |
-| **T-03** | PK 挑战失败（正值：长度从 25-30 PK 跌至 <25） | PK08 | 挑战失败 -5cm 无测试 |
-| **T-04** | PK 跌落神坛（正值：已通过挑战但长度跌回 <25） | PK09 | 无测试 |
-| **T-05** | 负值 PK 挑战触发/成功/失败/跌落（同上 4 项）| NP04-NP11 | 整个负值挑战系统无测试 |
-| **T-06** | 雌堕事件触发 | EV01 | 透群友后 xnn 区间累计注入达阈值，关键剧情事件 |
-| **T-07** | xnn 进入/退出通知 | PK14-PK17 | PK 中 xnn 状态转换通知无测试 |
+| ~~T-01~~ | ~~PK 挑战触发~~ | PK06 | ✅ test_positive_pk_self_challenge_trigger |
+| ~~T-02~~ | ~~PK 挑战成功~~ | PK07 | ✅ test_positive_pk_self_challenge_success |
+| ~~T-03~~ | ~~PK 挑战失败~~ | PK08 | ✅ test_positive_pk_self_challenge_failed |
+| ~~T-04~~ | ~~PK 跌落神坛~~ | PK09 | ✅ test_positive_pk_self_fall_from_god |
+| ~~T-05~~ | ~~负值 PK 挑战~~ | NP04-NP07 | ✅ 4 项负值挑战测试已全覆盖 |
+| ~~T-06~~ | ~~雌堕事件触发~~ | EV01 | ✅ test_tou_ciduo_trigger |
+| ~~T-07~~ | ~~xnn 进入/退出通知~~ | PK14-PK16 | ✅ 3 项 xnn 测试已覆盖 |
 
 #### 🟡 中优先级 — 分支/变体
 
 | 编号 | 测试场景 | 涉及文案 ID | 说明 |
 |------|---------|-------------|------|
-| **T-08** | xnn 透群友（被反转） | Y02, Y09 | xnn 发起透会被反转，目前无测试 |
-| **T-09** | 双 xnn 互透 | Y03, Y11 | 两个 xnn 互透的结算无测试 |
-| **T-10** | xnn 透女生（squeeze） | Y10 | 榨到腿软结算无测试 |
-| **T-11** | 透管理 / xnn 透群主 / xnn 透管理 | Y05-Y07 | 管理目标选择相关菜单无测试 |
-| **T-12** | 嗦牛子目标正在挑战中 | S03 | 目标 IS_CHALLENGING 状态被阻断 |
-| **T-13** | 嗦牛子触发目标挑战 | S05 | 嗦到 ≥25 触发挑战 |
-| **T-14** | 舔小学目标正在挑战中 | T02 | 目标 IS_CHALLENGING 状态被阻断 |
+| ~~T-08~~ | ~~xnn 透群友（被反转）~~ | Y02, Y09 | ✅ test_tou_xnn_reversed |
+| ~~T-09~~ | ~~双 xnn 互透~~ | Y03, Y11 | ✅ test_tou_xnn_both |
+| ~~T-10~~ | ~~xnn 透女生（squeeze）~~ | Y10 | ✅ test_tou_xnn_squeeze_female |
+| **T-11** | xnn 透群主 / xnn 透管理 | Y06, Y07 | xnn 发起者用群主/管理命令的反转菜单 |
+| ~~T-12~~ | ~~嗦牛子目标正在挑战中~~ | S03 | ✅ test_suo_target_is_challenging |
+| ~~T-13~~ | ~~嗦牛子触发目标挑战~~ | S05 | ✅ test_suo_triggers_challenge |
+| ~~T-14~~ | ~~舔小学目标正在挑战中~~ | T02 | ✅ test_tian_target_is_challenging |
 | **T-15** | PK 爆冷文案（bonus > 1） | PK03b/PK04b/NP01b/NP02b | 弱胜强随机文案 |
+| **T-18** | PK 对手跌落神坛 | PK11 | 赢方导致对手从已完成挑战跌落 |
+| **T-19** | PK 对手触发挑战成功 | PK13, NP11 | 输方导致对手完成挑战 |
+| **T-20** | 对手 xnn 退出通知 | PK17 | 对方挣脱 xnn |
+| **T-21** | 榨管理菜单 | Z03 | 榨管理目标选择 |
+| **T-22** | 目标找不到（target_not_found） | TS01 | 群友全在 ban list 等极端情况 |
 
 #### 🟢 低优先级 — 辅助功能/管理
 

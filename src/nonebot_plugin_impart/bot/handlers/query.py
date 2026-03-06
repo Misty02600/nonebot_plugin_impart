@@ -20,6 +20,9 @@ async def query_handler(
 ) -> None:
     """查询 jj 长度"""
     uid = event.get_user_id()
+
+    # TODO 寄是干嘛的，添加注释
+
     target_id = int(at if at != "寄" else uid)
     pronoun = "你" if at == "寄" else "TA"
 

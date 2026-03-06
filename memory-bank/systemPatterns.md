@@ -29,7 +29,7 @@ src/nonebot_plugin_impart/
         ├── pk.py             # PK 对决（pipeline: cd_check → world_guard → execute，3 matcher）
         ├── dajiao.py         # 打胶（自增长度）
         ├── suo.py            # 嗦牛子（给他人增长度）
-        ├── yinpa.py          # 透群友/群主/管理（pipeline: cd_check → world_guard → execute）
+        ├── yinpa.py          # 透/榨群友/群主/管理（6 matcher，pipeline: cd_check → world_guard → execute）
         ├── query.py          # 查询长度
         ├── rank.py           # 排行榜（使用 ChartRenderer）
         ├── injection.py      # 注入量查询（使用 ChartRenderer）
@@ -55,6 +55,7 @@ src/nonebot_plugin_impart/
 | 嗦牛子/嗦        | 目标 +随机数                         | 300s  |
 | PK/对决          | 赢方 +num×r×bonus，输方 -num；胜率归一化+阻尼调整 | 60s   |
 | 透群友/群主/管理 | 选择目标，注入脱氧核糖核酸           | 3600s |
+| 榨群友/群主/管理 | 负值玩家榨取正值目标精华             | 3600s |
 
 ### 状态区间与称号
 | 长度范围 | 状态                         |

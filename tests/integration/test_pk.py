@@ -919,3 +919,105 @@ async def test_positive_pk_opp_xnn_enter(app: App, fresh_env):
 
     target_len = await dm.get_jj_length(TARGET_ID)
     assert 0 < target_len <= 5  # 对方进入 xnn
+
+
+# ══════════════════════════════════════════════════════
+# 对方挑战/xnn 补充边界测试
+# ══════════════════════════════════════════════════════
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_positive_pk_opp_fall_from_god(app: App, fresh_env):
+    """正值 PK — 对方已完成挑战但长度跌回 <25 → 跌落神坛 -5。"""
+    dm, cd = fresh_env
+    await dm.add_new_user(USER_ID)
+    await dm.set_jj_length_absolute(USER_ID, 15.0)
+    await dm.add_new_user(TARGET_ID)
+    await dm.set_jj_length_absolute(TARGET_ID, 31.0)
+    # TARGET 完成过挑战
+    await dm.update_challenge_status(TARGET_ID)  # CHALLENGE_COMPLETED
+
+    from nonebot_plugin_impart.bot.handlers.pk import pk_shared_matcher
+
+    with (
+        patch(
+            "nonebot_plugin_impart.bot.handlers.pk.random.random",
+            return_value=0.01,  # USER 必赢 → TARGET 输
+        ),
+        patch(
+            "nonebot_plugin_impart.bot.handlers.pk.get_random_num",
+            return_value=8.0,  # TARGET: 31-8 = 23 (<25) → COMPLETED_REDUCE → -5 → 18
+        ),
+    ):
+        async with app.test_matcher(pk_shared_matcher) as ctx:
+            bot = ctx.create_bot()
+            event = _event()
+            ctx.receive_event(bot, event)
+            ctx.should_call_send(event, ANY_MSG, result=None, at_sender=True)
+
+    target_len = await dm.get_jj_length(TARGET_ID)
+    assert target_len == pytest.approx(18.0, abs=0.5)
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_positive_pk_opp_challenge_success(app: App, fresh_env):
+    """正值 PK — 对方挑战中且因我方失败长度超 30 → 对方挑战成功。"""
+    dm, cd = fresh_env
+    await dm.add_new_user(USER_ID)
+    await dm.set_jj_length_absolute(USER_ID, 15.0)
+    await dm.add_new_user(TARGET_ID)
+    await dm.set_jj_length_absolute(TARGET_ID, 28.0)
+    await dm.update_challenge_status(TARGET_ID)  # TARGET is_challenging = True
+
+    from nonebot_plugin_impart.bot.handlers.pk import pk_shared_matcher
+
+    with (
+        patch(
+            "nonebot_plugin_impart.bot.handlers.pk.random.random",
+            return_value=0.99,  # USER 必输 → TARGET 赢
+        ),
+        patch(
+            "nonebot_plugin_impart.bot.handlers.pk.get_random_num",
+            return_value=8.0,  # TARGET gain = 8*0.5 = 4, TARGET: 28+4 = 32 (>=30)
+        ),
+    ):
+        async with app.test_matcher(pk_shared_matcher) as ctx:
+            bot = ctx.create_bot()
+            event = _event()
+            ctx.receive_event(bot, event)
+            ctx.should_call_send(event, ANY_MSG, result=None, at_sender=True)
+
+    target_len = await dm.get_jj_length(TARGET_ID)
+    assert target_len >= 30
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_positive_pk_opp_xnn_exit(app: App, fresh_env):
+    """正值 PK — 对方为 xnn 且赢后长度超 5 → 退出 xnn。"""
+    dm, cd = fresh_env
+    await dm.add_new_user(USER_ID)
+    await dm.set_jj_length_absolute(USER_ID, 15.0)
+    await dm.add_new_user(TARGET_ID)
+    await dm.set_jj_length_absolute(TARGET_ID, 3.0)
+    await dm.update_challenge_status(TARGET_ID)  # 标记 xnn
+
+    from nonebot_plugin_impart.bot.handlers.pk import pk_shared_matcher
+
+    with (
+        patch(
+            "nonebot_plugin_impart.bot.handlers.pk.random.random",
+            return_value=0.99,  # USER 必输 → TARGET 赢
+        ),
+        patch(
+            "nonebot_plugin_impart.bot.handlers.pk.get_random_num",
+            return_value=8.0,  # TARGET: xnn bonus=max(1,0.5/0.25)=2, gain=8*0.5*2=8
+        ),
+    ):
+        async with app.test_matcher(pk_shared_matcher) as ctx:
+            bot = ctx.create_bot()
+            event = _event()
+            ctx.receive_event(bot, event)
+            ctx.should_call_send(event, ANY_MSG, result=None, at_sender=True)
+
+    target_len = await dm.get_jj_length(TARGET_ID)
+    assert target_len > 5  # 已退出 xnn

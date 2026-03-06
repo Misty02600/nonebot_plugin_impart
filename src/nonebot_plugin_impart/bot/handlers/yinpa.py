@@ -91,7 +91,7 @@ async def positive_target_guard(
 
 # region 透群友执行 handler
 
-
+# TODO 没必要把群主到群友的逻辑全塞一起，适当拆分事件处理函数更优雅
 async def execute_tou(
     matcher: Matcher,
     dm: DataManagerDep,
@@ -200,6 +200,7 @@ async def execute_tou(
 
 # region 榨群友执行 handler
 
+# TODO 同样的，拆分事件处理函数给不同matcher用更优雅
 
 async def execute_zha(
     matcher: Matcher,
@@ -303,30 +304,90 @@ async def _check_ciduo(
 
 # region 命令注册
 
+# 保持兼容：`yinpa_matcher` / `zha_matcher` 仍代表“群友”命令。
+
+# TODO 使用on_command重构，支持别名（如“透管理”）和参数（如“透群友 @用户”）
+
 yinpa_matcher = on_regex(
-    r"^(日|透)(群友|群主|管理)$",
+    r"^(日|透)(群友)(?:\s+.*)?$",
     flags=I,
     priority=20,
     block=True,
     handlers=[
-        group_enabled_check,  # 1. 群聊启用检查
-        yinpa_cd_check,  # 2. CD 检查（解析 RequesterCtx）
-        positive_world_guard,  # 3. 世界校验：仅正值
-        execute_tou,  # 4. 记 CD + 菜单 + 结算 + 雌堕（解析 TargetCtx）
+        group_enabled_check,
+        yinpa_cd_check,
+        positive_world_guard,
+        execute_tou,
+    ],
+)
+
+# TODO 群主后面没必要捕获艾特
+
+yinpa_owner_matcher = on_regex(
+    r"^(日|透)(群主)(?:\s+.*)?$",
+    flags=I,
+    priority=20,
+    block=True,
+    handlers=[
+        group_enabled_check,
+        yinpa_cd_check,
+        positive_world_guard,
+        execute_tou,
+    ],
+)
+
+yinpa_admin_matcher = on_regex(
+    r"^(日|透)(管理)(?:\s+.*)?$",
+    flags=I,
+    priority=20,
+    block=True,
+    handlers=[
+        group_enabled_check,
+        yinpa_cd_check,
+        positive_world_guard,
+        execute_tou,
     ],
 )
 
 zha_matcher = on_regex(
-    r"^(榨)(群友|群主|管理)$",
+    r"^(榨)(群友)(?:\s+.*)?$",
     flags=I,
     priority=20,
     block=True,
     handlers=[
-        group_enabled_check,  # 1. 群聊启用检查
-        yinpa_cd_check,  # 2. CD 检查（解析 RequesterCtx）
-        negative_world_guard,  # 3. 世界校验：仅负值
-        positive_target_guard,  # 4. 目标校验：目标必须正值（解析 TargetCtx）
-        execute_zha,  # 5. 记 CD + 菜单 + 结算
+        group_enabled_check,
+        yinpa_cd_check,
+        negative_world_guard,
+        positive_target_guard,
+        execute_zha,
+    ],
+)
+
+zha_owner_matcher = on_regex(
+    r"^(榨)(群主)(?:\s+.*)?$",
+    flags=I,
+    priority=20,
+    block=True,
+    handlers=[
+        group_enabled_check,
+        yinpa_cd_check,
+        negative_world_guard,
+        positive_target_guard,
+        execute_zha,
+    ],
+)
+
+zha_admin_matcher = on_regex(
+    r"^(榨)(管理)(?:\s+.*)?$",
+    flags=I,
+    priority=20,
+    block=True,
+    handlers=[
+        group_enabled_check,
+        yinpa_cd_check,
+        negative_world_guard,
+        positive_target_guard,
+        execute_zha,
     ],
 )
 
