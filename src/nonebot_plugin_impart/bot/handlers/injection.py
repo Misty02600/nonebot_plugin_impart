@@ -62,7 +62,10 @@ async def injection_handler(
             data=inject_data,
         )
 
-        await matcher.finish(MessageSegment.text(f"{label}历史总被注射量为{total}ml") + MessageSegment.image(img_bytes))
+        await matcher.finish(
+            MessageSegment.text(f"{label}历史总被注射量为{total}ml")
+            + MessageSegment.image(img_bytes)
+        )
     else:
         ejaculation = await dm.get_today_ejaculation_data(int(object_id))
         await matcher.finish(f"{label}当日总被注射量为{ejaculation}ml")

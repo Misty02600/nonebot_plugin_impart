@@ -52,8 +52,15 @@ class PluginConfig(BaseModel):
     fuck_cd_time: int = Field(default=3600, description="透群友冷却时间(秒)")
     ban_id_list: str = Field(default="123456", description="白名单列表(逗号分隔)")
     isalive: bool = Field(default=False, description="是否启用不活跃惩罚")
-    pk_rake_ratio: float = Field(default=0.5, description="PK赢家收益系数 r (赢家获得 num×r×bonus)")
-    pk_win_rate_k: float = Field(default=0.02, description="PK胜率变化基础量 K (中心处有效变化 ±K)")
-    jj_aliases: list[str] = Field(default=["牛子", "牛牛", "newnew"], description="正值世界别名列表（随机选取）")
-    hole_aliases: list[str] = Field(default=["小学", "蜜雪"], description="负值世界别名列表（随机选取）")
-
+    pk_rake_ratio: float = Field(
+        default=0.5, description="PK赢家收益系数 r (赢家获得 num×r×bonus)"
+    )
+    pk_win_rate_k: float = Field(
+        default=0.02, description="PK胜率变化基础量 K (中心处有效变化 ±K)"
+    )
+    jj_aliases: list[str] = Field(
+        default=["牛子", "牛牛", "newnew"], description="正值世界别名列表（随机选取）"
+    )
+    hole_aliases: list[str] = Field(
+        default=["小学", "蜜雪"], description="负值世界别名列表（随机选取）"
+    )

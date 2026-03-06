@@ -66,7 +66,9 @@ class DataManager:
             await self.add_new_user(userid)
         async with self._session_factory() as s:
             await s.execute(
-                update(UserData).where(UserData.userid == userid).values(last_masturbation_time=int(time.time()))
+                update(UserData)
+                .where(UserData.userid == userid)
+                .values(last_masturbation_time=int(time.time()))
             )
             await s.commit()
 
@@ -77,7 +79,9 @@ class DataManager:
     async def get_jj_length(self, userid: int) -> float:
         """获取用户的 jj 长度"""
         async with self._session_factory() as s:
-            result = await s.execute(select(UserData.jj_length).filter(UserData.userid == userid))
+            result = await s.execute(
+                select(UserData.jj_length).filter(UserData.userid == userid)
+            )
             return result.scalar() or 0.0
 
     async def set_jj_length(self, userid: int, delta: float) -> None:
@@ -123,7 +127,9 @@ class DataManager:
     async def get_win_probability(self, userid: int) -> float:
         """获取用户获胜概率"""
         async with self._session_factory() as s:
-            result = await s.execute(select(UserData.win_probability).filter(UserData.userid == userid))
+            result = await s.execute(
+                select(UserData.win_probability).filter(UserData.userid == userid)
+            )
             return result.scalar() or 0.5
 
     async def set_win_probability(self, userid: int, delta: float) -> None:
@@ -199,7 +205,9 @@ class DataManager:
                 update(UserData)
                 .where(UserData.userid == winner_id)
                 .values(
-                    win_probability=func.round(UserData.win_probability + winner_prob_delta, 6),
+                    win_probability=func.round(
+                        UserData.win_probability + winner_prob_delta, 6
+                    ),
                     jj_length=safe_winner,
                     last_masturbation_time=int(time.time()),
                 )
@@ -210,7 +218,9 @@ class DataManager:
                 update(UserData)
                 .where(UserData.userid == loser_id)
                 .values(
-                    win_probability=func.round(UserData.win_probability + loser_prob_delta, 6),
+                    win_probability=func.round(
+                        UserData.win_probability + loser_prob_delta, 6
+                    ),
                     jj_length=safe_loser,
                     last_masturbation_time=int(time.time()),
                 )
@@ -223,9 +233,13 @@ class DataManager:
             await s.commit()
             return winner_status, loser_status
 
-    async def _evaluate_and_apply_challenge(self, session: AsyncSession, userid: int) -> str:
+    async def _evaluate_and_apply_challenge(
+        self, session: AsyncSession, userid: int
+    ) -> str:
         """在给定 session 中评估并应用挑战状态（不提交）"""
-        result = await session.execute(select(UserData).where(UserData.userid == userid))
+        result = await session.execute(
+            select(UserData).where(UserData.userid == userid)
+        )
         user = result.scalar()
         if not user:
             return ChallengeStatus.NONE
@@ -249,7 +263,9 @@ class DataManager:
             if user.jj_length == 0.0:
                 user.jj_length = -0.01
         if change.probability_factor != 1.0:
-            user.win_probability = round(user.win_probability * change.probability_factor, 3)
+            user.win_probability = round(
+                user.win_probability * change.probability_factor, 3
+            )
         if change.set_challenging is not None:
             user.is_challenging = change.set_challenging
         if change.set_completed is not None:
@@ -266,13 +282,17 @@ class DataManager:
     async def check_group_allow(self, groupid: int) -> bool:
         """检查群是否允许使用"""
         async with self._session_factory() as s:
-            result = await s.execute(select(GroupData.allow).filter(GroupData.groupid == groupid))
+            result = await s.execute(
+                select(GroupData.allow).filter(GroupData.groupid == groupid)
+            )
             return result.scalar() or False
 
     async def set_group_allow(self, groupid: int, *, allow: bool) -> None:
         """设置群开关"""
         async with self._session_factory() as s:
-            result = await s.execute(select(GroupData).where(GroupData.groupid == groupid))
+            result = await s.execute(
+                select(GroupData).where(GroupData.groupid == groupid)
+            )
             existing = result.scalar_one_or_none()
             if existing is None:
                 s.add(GroupData(groupid=groupid, allow=allow))
@@ -311,8 +331,12 @@ class DataManager:
     async def get_ejaculation_data(self, userid: int) -> list[dict]:
         """获取用户所有注入记录"""
         async with self._session_factory() as s:
-            result = await s.execute(select(EjaculationData).filter(EjaculationData.userid == userid))
-            return [{"date": row.date, "volume": row.volume} for row in result.scalars()]
+            result = await s.execute(
+                select(EjaculationData).filter(EjaculationData.userid == userid)
+            )
+            return [
+                {"date": row.date, "volume": row.volume} for row in result.scalars()
+            ]
 
     async def get_today_ejaculation_data(self, userid: int) -> float:
         """获取用户当日注入量"""
@@ -333,8 +357,13 @@ class DataManager:
     async def get_sorted_users(self) -> list[dict]:
         """获取所有用户 jj 长度排行（从大到小）"""
         async with self._session_factory() as s:
-            result = await s.execute(select(UserData).order_by(UserData.jj_length.desc()))
-            return [{"userid": user.userid, "jj_length": user.jj_length} for user in result.scalars()]
+            result = await s.execute(
+                select(UserData).order_by(UserData.jj_length.desc())
+            )
+            return [
+                {"userid": user.userid, "jj_length": user.jj_length}
+                for user in result.scalars()
+            ]
 
     async def punish_all_inactive_users(self) -> None:
         """惩罚不活跃用户

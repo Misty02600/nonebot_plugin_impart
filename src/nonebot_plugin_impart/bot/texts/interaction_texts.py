@@ -174,7 +174,9 @@ def xnn_enter() -> str:
         "\n你可以通过打胶或对决挣脱，亦或者...成为群友的rbq？"
     )
 
+
 # TODO 退出的文案不太好，有待优化
+
 
 def xnn_self_exit() -> str:
     """自己挣脱 xnn 状态提示。"""
@@ -189,6 +191,7 @@ def xnn_opp_enter() -> str:
 def xnn_opp_exit() -> str:
     """对方挣脱 xnn 状态提示。"""
     return "\n对方已挣脱xnn状态喵！"
+
 
 # TODO 和wrong_world_negative风格一致
 def wrong_world_positive() -> str:
@@ -223,11 +226,14 @@ def pk_negative_only() -> str:
 
 # TODO 对于对方不符合Pk性别的文案呢，可以说对方没有jj/hole，不能pk
 
+
 def suo_target_negative(*, pronoun: str, jj_name: str) -> str:
     """嗦目标处于负值世界时的提示。"""
     return f"{pronoun}是女生，没有{jj_name}可以嗦喵"
 
+
 # TODO 男生也要说没有hole可以舔喵。此外把所有男孩子女孩子改为男生女生
+
 
 def tian_target_not_negative(*, pronoun: str) -> str:
     """舔目标不在负值世界时的提示。"""

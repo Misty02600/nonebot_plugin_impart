@@ -31,11 +31,26 @@ async def init_db(engine) -> None:
 async def _check_and_add_columns(engine) -> None:
     """检查并添加缺失的列（兼容旧数据库）"""
     migrations: list[tuple[str, str]] = [
-        ("win_probability", "ALTER TABLE userdata ADD COLUMN win_probability FLOAT DEFAULT 0.5"),
-        ("is_challenging", "ALTER TABLE userdata ADD COLUMN is_challenging BOOLEAN DEFAULT FALSE"),
-        ("challenge_completed", "ALTER TABLE userdata ADD COLUMN challenge_completed BOOLEAN DEFAULT FALSE"),
-        ("is_near_zero", "ALTER TABLE userdata ADD COLUMN is_near_zero BOOLEAN DEFAULT FALSE"),
-        ("is_zero_or_neg", "ALTER TABLE userdata ADD COLUMN is_zero_or_neg BOOLEAN DEFAULT FALSE"),
+        (
+            "win_probability",
+            "ALTER TABLE userdata ADD COLUMN win_probability FLOAT DEFAULT 0.5",
+        ),
+        (
+            "is_challenging",
+            "ALTER TABLE userdata ADD COLUMN is_challenging BOOLEAN DEFAULT FALSE",
+        ),
+        (
+            "challenge_completed",
+            "ALTER TABLE userdata ADD COLUMN challenge_completed BOOLEAN DEFAULT FALSE",
+        ),
+        (
+            "is_near_zero",
+            "ALTER TABLE userdata ADD COLUMN is_near_zero BOOLEAN DEFAULT FALSE",
+        ),
+        (
+            "is_zero_or_neg",
+            "ALTER TABLE userdata ADD COLUMN is_zero_or_neg BOOLEAN DEFAULT FALSE",
+        ),
     ]
     async with engine.begin() as conn:
         result = await conn.execute(sa.text("PRAGMA table_info(userdata)"))

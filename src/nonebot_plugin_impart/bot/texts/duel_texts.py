@@ -32,21 +32,25 @@ class PkCopy(_JJBotBase, frozen=True):
 
     def win(self) -> str:
         if self._is_upset:
-            return random.choice([
-                f"对决胜利喵, 你的{self.jj_name}以弱胜强击败了对手, 增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
-                f"对决胜利喵, 在危急时刻你的{self.jj_name}化险为夷, 增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
-                f"对决胜利喵, 你的{self.jj_name}爆发出惊人的力量, 增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
-                f"对决胜利喵, 对面大意了没有闪, 你的{self.jj_name}趁势增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
-            ])
+            return random.choice(
+                [
+                    f"对决胜利喵, 你的{self.jj_name}以弱胜强击败了对手, 增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
+                    f"对决胜利喵, 在危急时刻你的{self.jj_name}化险为夷, 增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
+                    f"对决胜利喵, 你的{self.jj_name}爆发出惊人的力量, 增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
+                    f"对决胜利喵, 对面大意了没有闪, 你的{self.jj_name}趁势增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵",
+                ]
+            )
         return f"对决胜利喵, 你的{self.jj_name}增加了{self.inc}cm喵, 对面则在你的阴影笼罩下减小了{self.dec}cm喵"
 
     def lose(self) -> str:
         if self._is_upset:
-            return random.choice([
-                f"对决失败喵, 对面的{self.jj_name2}以弱胜强击败了你, 在对面{self.jj_name2}的阴影笼罩下，你的{self.jj_name}减小了{self.dec}cm喵, 对面增加了{self.inc}cm喵",
-                f"对决失败喵, 对面的{self.jj_name2}在绝境中逆袭, 在对面{self.jj_name2}的阴影笼罩下，你的{self.jj_name}减小了{self.dec}cm喵, 对面增加了{self.inc}cm喵",
-                f"对决失败喵, 你轻敌了喵! 对面的{self.jj_name2}爆发出惊人的力量, 在对面{self.jj_name2}的阴影笼罩下，你的{self.jj_name}减小了{self.dec}cm喵, 对面增加了{self.inc}cm喵",
-            ])
+            return random.choice(
+                [
+                    f"对决失败喵, 对面的{self.jj_name2}以弱胜强击败了你, 在对面{self.jj_name2}的阴影笼罩下，你的{self.jj_name}减小了{self.dec}cm喵, 对面增加了{self.inc}cm喵",
+                    f"对决失败喵, 对面的{self.jj_name2}在绝境中逆袭, 在对面{self.jj_name2}的阴影笼罩下，你的{self.jj_name}减小了{self.dec}cm喵, 对面增加了{self.inc}cm喵",
+                    f"对决失败喵, 你轻敌了喵! 对面的{self.jj_name2}爆发出惊人的力量, 在对面{self.jj_name2}的阴影笼罩下，你的{self.jj_name}减小了{self.dec}cm喵, 对面增加了{self.inc}cm喵",
+                ]
+            )
         return (
             f"对决失败喵, 在对面{self.jj_name2}的阴影笼罩下"
             f"你的{self.jj_name}减小了{self.dec}cm喵, "
@@ -82,10 +86,7 @@ class PkCopy(_JJBotBase, frozen=True):
         )
 
     def self_fall(self) -> str:
-        return (
-            f"\n很遗憾，你跌落神坛，别气馁啦！\n你的{self.jj_name}长度缩短了5cm喵，请不忘初心，再次冲击更高的境界喵！"
-        )
-
+        return f"\n很遗憾，你跌落神坛，别气馁啦！\n你的{self.jj_name}长度缩短了5cm喵，请不忘初心，再次冲击更高的境界喵！"
 
     # endregion
 
@@ -105,7 +106,6 @@ class PkCopy(_JJBotBase, frozen=True):
             f"很遗憾，TA跌落神坛，{self.botname}替TA感谢你的鞭策喵！"
             f"\nTA的{self.jj_name2}长度缩短了5cm喵，请不忘初心，再次冲击更高的境界喵！"
         )
-
 
     def opp_challenge_start(self) -> str:
         return (
@@ -145,25 +145,29 @@ class NegPkCopy(_HoleBotBase, frozen=True):
     def _is_upset(self) -> bool:
         return self.bonus > 1.0
 
-# TODO 此处文案还需要优化，不要全是深渊抽象，由于是女同磨豆腐/互扣，可以具现一点，像牛子pk那样
+    # TODO 此处文案还需要优化，不要全是深渊抽象，由于是女同磨豆腐/互扣，可以具现一点，像牛子pk那样
 
     def win(self) -> str:
         if self._is_upset:
-            return random.choice([
-                f"对决胜利喵, 你的{self.hole_name}在绝境中觉醒, 加深了{self.inc}cm喵, 对面在你的吞噬下变浅了{self.dec}cm喵",
-                f"对决胜利喵, 深渊回应了你的呼唤, 你的{self.hole_name}加深了{self.inc}cm喵, 对面变浅了{self.dec}cm喵",
-                f"对决胜利喵, 黑暗中你的{self.hole_name}蚕食了对手, 加深了{self.inc}cm喵, 对面变浅了{self.dec}cm喵",
-                f"对决胜利喵, 对面小看了深渊的力量, 你的{self.hole_name}加深了{self.inc}cm喵, 对面变浅了{self.dec}cm喵",
-            ])
+            return random.choice(
+                [
+                    f"对决胜利喵, 你的{self.hole_name}在绝境中觉醒, 加深了{self.inc}cm喵, 对面在你的吞噬下变浅了{self.dec}cm喵",
+                    f"对决胜利喵, 深渊回应了你的呼唤, 你的{self.hole_name}加深了{self.inc}cm喵, 对面变浅了{self.dec}cm喵",
+                    f"对决胜利喵, 黑暗中你的{self.hole_name}蚕食了对手, 加深了{self.inc}cm喵, 对面变浅了{self.dec}cm喵",
+                    f"对决胜利喵, 对面小看了深渊的力量, 你的{self.hole_name}加深了{self.inc}cm喵, 对面变浅了{self.dec}cm喵",
+                ]
+            )
         return f"对决胜利喵, 你的{self.hole_name}加深了{self.inc}cm喵, 对面则在你的吞噬下变浅了{self.dec}cm喵"
 
     def lose(self) -> str:
         if self._is_upset:
-            return random.choice([
-                f"对决失败喵, 对面的{self.hole_name2}在绝境中觉醒, 你的{self.hole_name}变浅了{self.dec}cm喵, 对面加深了{self.inc}cm喵",
-                f"对决失败喵, 深渊回应了对面的呼唤, 你的{self.hole_name}变浅了{self.dec}cm喵, 对面加深了{self.inc}cm喵",
-                f"对决失败喵, 你轻敌了喵! 对面的{self.hole_name2}从黑暗中反噬, 你的{self.hole_name}变浅了{self.dec}cm喵, 对面加深了{self.inc}cm喵",
-            ])
+            return random.choice(
+                [
+                    f"对决失败喵, 对面的{self.hole_name2}在绝境中觉醒, 你的{self.hole_name}变浅了{self.dec}cm喵, 对面加深了{self.inc}cm喵",
+                    f"对决失败喵, 深渊回应了对面的呼唤, 你的{self.hole_name}变浅了{self.dec}cm喵, 对面加深了{self.inc}cm喵",
+                    f"对决失败喵, 你轻敌了喵! 对面的{self.hole_name2}从黑暗中反噬, 你的{self.hole_name}变浅了{self.dec}cm喵, 对面加深了{self.inc}cm喵",
+                ]
+            )
         return f"对决失败喵, 在对面的侵蚀下你的{self.hole_name}变浅了{self.dec}cm喵, 对面加深了{self.inc}cm喵"
 
     def probability(self) -> str:

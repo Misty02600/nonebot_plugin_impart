@@ -85,7 +85,10 @@ jobs:
           version: latest
 
       - name: Install Dependencies
-        run: uv sync
+        run: uv sync --no-dev --group test
+
+      - name: Install Playwright browsers
+        run: uv run playwright install --with-deps chromium
 
       - name: Run Pytest
         run: uv run pytest --cov=src --cov-report xml --junitxml=./junit.xml -n auto

@@ -146,7 +146,8 @@ async def positive_world_guard(
     """世界校验：击剑仅限正值玩家。"""
     if ctx.uid_state.is_negative_world:
         await matcher.finish(
-            pk_positive_only(), at_sender=True,
+            pk_positive_only(),
+            at_sender=True,
         )
 
 
@@ -157,7 +158,8 @@ async def negative_world_guard(
     """世界校验：磨豆腐/磨仅限负值玩家。"""
     if not ctx.uid_state.is_negative_world:
         await matcher.finish(
-            pk_negative_only(), at_sender=True,
+            pk_negative_only(),
+            at_sender=True,
         )
 
 
@@ -318,7 +320,9 @@ async def _do_negative_pk(
     target_base_prob = await dm.get_win_probability(ctx.target_id)
 
     # 归一化胜率
-    prob = calc_normalized_win_probability(wa_eff=uid_base_prob, wb_eff=target_base_prob)
+    prob = calc_normalized_win_probability(
+        wa_eff=uid_base_prob, wb_eff=target_base_prob
+    )
     win = random.random() < prob
 
     num = get_random_num()
@@ -337,8 +341,12 @@ async def _do_negative_pk(
     loser_id = ctx.target_id if win else ctx.uid
 
     # 胜率变化（阻尼）
-    winner_prob_delta = calc_win_rate_delta(w=uid_base_prob if win else target_base_prob, won=True, k=k)
-    loser_prob_delta = calc_win_rate_delta(w=target_base_prob if win else uid_base_prob, won=False, k=k)
+    winner_prob_delta = calc_win_rate_delta(
+        w=uid_base_prob if win else target_base_prob, won=True, k=k
+    )
+    loser_prob_delta = calc_win_rate_delta(
+        w=target_base_prob if win else uid_base_prob, won=False, k=k
+    )
 
     # 负值世界：胜者加深 (length 更负)，败者变浅 (length 更正)
     winner_status, loser_status = await dm.execute_pk(
@@ -419,6 +427,7 @@ def _build_opponent_challenge_msg(
             return pk.opp_challenge_success()
     return ""
 
+
 def _build_xnn_notification(
     uid_status: str,
     at_status: str,
@@ -486,9 +495,9 @@ pk_shared_matcher = on_command(
     priority=20,
     block=False,
     handlers=[
-        group_enabled_check,    # 1. 群聊启用检查
-        pk_cd_check,            # 2. CD 检查
-        execute_general_pk,     # 3. 解析 PkCtx（@/存在/同阵营）→ 分派正负值
+        group_enabled_check,  # 1. 群聊启用检查
+        pk_cd_check,  # 2. CD 检查
+        execute_general_pk,  # 3. 解析 PkCtx（@/存在/同阵营）→ 分派正负值
     ],
 )
 
@@ -498,10 +507,10 @@ jijian_matcher = on_command(
     priority=20,
     block=False,
     handlers=[
-        group_enabled_check,    # 1. 群聊启用检查
-        pk_cd_check,            # 2. CD 检查
-        positive_world_guard,   # 3. 解析 PkCtx + 正值阵营校验
-        execute_positive_pk,    # 4. 正值 PK 逻辑
+        group_enabled_check,  # 1. 群聊启用检查
+        pk_cd_check,  # 2. CD 检查
+        positive_world_guard,  # 3. 解析 PkCtx + 正值阵营校验
+        execute_positive_pk,  # 4. 正值 PK 逻辑
     ],
 )
 
@@ -512,10 +521,10 @@ modofu_matcher = on_command(
     priority=20,
     block=False,
     handlers=[
-        group_enabled_check,    # 1. 群聊启用检查
-        pk_cd_check,            # 2. CD 检查
-        negative_world_guard,   # 3. 解析 PkCtx + 负值阵营校验
-        execute_negative_pk,    # 4. 负值 PK 逻辑
+        group_enabled_check,  # 1. 群聊启用检查
+        pk_cd_check,  # 2. CD 检查
+        negative_world_guard,  # 3. 解析 PkCtx + 负值阵营校验
+        execute_negative_pk,  # 4. 负值 PK 逻辑
     ],
 )
 

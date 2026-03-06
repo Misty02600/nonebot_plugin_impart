@@ -17,6 +17,7 @@ from nonebot_plugin_impart.core.game import (
 #  辅助
 # ═══════════════════════════════════════════════════════
 
+
 def _call(
     jj_length: float,
     *,

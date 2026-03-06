@@ -83,7 +83,13 @@ async def rank_handler(
         user_id = user["userid"]
         info = user_info_map[user_id]
         rank_entries.append(
-            (idx + 1, str(user_id), info["nickname"], info["avatar_url"], user["jj_length"])
+            (
+                idx + 1,
+                str(user_id),
+                info["nickname"],
+                info["avatar_url"],
+                user["jj_length"],
+            )
         )
 
     # 渲染图表
@@ -95,7 +101,6 @@ async def rank_handler(
     )
     reply = f"你的排名为{user_rank}喵"
     await matcher.finish(MessageSegment.image(img_bytes) + reply, at_sender=True)
-
 
 
 # endregion
